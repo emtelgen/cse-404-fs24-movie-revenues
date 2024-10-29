@@ -11,6 +11,7 @@ class DataProcessor:
     def load_all_data(self):
         """Loads all data from Letterboxd and RevenueData."""
         self.letterboxd.load_data()
+        self.letterboxd.remove_bottom_rows()
         self.revenue_data.load_box_office_data()
         self.revenue_data.load_brand_data()
         self.revenue_data.load_franchise_data()
