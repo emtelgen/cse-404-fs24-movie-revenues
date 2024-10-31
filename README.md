@@ -4,7 +4,7 @@
 # Team Members
 - Emily Telgenhoff
 - Zoom Nguyen
-
+- Advaith Vuppala
 
 # Project 1 Step 4: Data Reader & Starting Initial Model
 
