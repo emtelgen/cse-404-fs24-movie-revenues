@@ -7,9 +7,9 @@ from omdbdata import OMDBDataCollector
 from revenue import RevenueData
 
 # Load and initialize the data classes (make sure the paths and API keys are correct)
-letterboxd = Letterboxd(base_path='path_to_letterboxd_data')
-revenue_data = RevenueData(base_path='path_to_revenue_data')
-omdb_data = OMDBDataCollector(api_key="YOUR_API_KEY")
+letterboxd = Letterboxd(base_path='data')
+revenue_data = RevenueData(base_path='data')
+omdb_data = OMDBDataCollector(api_key="e0c45287")
 
 # Load Letterboxd, Revenue, OMDb
 letterboxd.load_data()

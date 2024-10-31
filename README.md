@@ -1,3 +1,11 @@
+# How to use
+- Run model.py
+
+# Team Members
+- Emily Telgenhoff
+- Zoom Nguyen
+
+
 # Project 1 Step 4: Data Reader & Starting Initial Model
 
 - Step 1 is the reader and you need to have that correctly done. 

@@ -21,26 +21,35 @@ class DataProcessor:
         """Exports movie titles from Letterboxd."""
         self.letterboxd.export_movie_titles("movie_titles.csv")
     
-    def preview_data(self):
-        """Displays the first few rows of Letterboxd and RevenueData."""
+    def preview_letterboxd_data(self):
+        """Displays the first few rows of Letterboxd data only."""
         print("Movies Data:")
         print(self.letterboxd.movies.head(), "\n")
         print(f"Total number of movies: {len(self.letterboxd.movies)}\n") 
 
-        print("Box Office Data:")
-        print(self.revenue_data.box_office_data.head(), "\n")
-        
-        print("Brand Data:")
-        print(self.revenue_data.brand_data.head(), "\n")
+        print("Actors Data:")
+        print(self.letterboxd.actors.head(), "\n")
 
-        print("Franchise Data:")
-        print(self.revenue_data.franchise_data.head(), "\n")
+        print("Crew Data:")
+        print(self.letterboxd.crew.head(), "\n")
 
-        print("Genre Data:")
-        print(self.revenue_data.genre_data.head(), "\n")
+        print("Languages Data:")
+        print(self.letterboxd.languages.head(), "\n")
 
-        print("Top Movies Data:")
-        print(self.revenue_data.top_movies_data.head(), "\n")
+        print("Studios Data:")
+        print(self.letterboxd.studios.head(), "\n")
+
+        print("Countries Data:")
+        print(self.letterboxd.countries.head(), "\n")
+
+        print("Genres Data:")
+        print(self.letterboxd.genres.head(), "\n")
+
+        print("Themes Data:")
+        print(self.letterboxd.themes.head(), "\n")
+
+        print("Releases Data:")
+        print(self.letterboxd.releases.head(), "\n")
 
 if __name__ == "__main__":
     base_path = "data"  
@@ -52,5 +61,5 @@ if __name__ == "__main__":
     # Export movie titles
     data_processor.export_movie_titles()
 
-    # Preview the data
-    data_processor.preview_data()
+    # Preview only the Letterboxd data
+    data_processor.preview_letterboxd_data()
