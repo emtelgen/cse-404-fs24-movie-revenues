@@ -5,6 +5,7 @@
 - Emily Telgenhoff
 - Zoom Nguyen
 - Advaith Vuppala
+- Seth Darling
 
 # Project 1 Step 4: Data Reader & Starting Initial Model
 
@@ -19,9 +20,11 @@
 - Initial Model. When you have the data reader in place, use a learning algorithm on the data, and evaluate its performance, even a naive initial working model that is made by your team would be sufficient.  Also, please write up the following information: 
 
 - What is the setting of your project? is it supervised, unsupervised, or semisupervised? (I think everybody got supervision for this class though). 
+- Our project is supervised with our model being trained on labled movie data
 - How you represent X (Features/Representation  and their explanation, justification)
 - How do you represent Y (binary? multi-class? sequences? trees? graphs?)
 - Which libraries you will use?
+- We are using Sklearn for the model and Pandas for handling the data
 
 > Note that, all this information will be a part of your final project report.
 
