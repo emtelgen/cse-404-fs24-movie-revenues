@@ -6,6 +6,7 @@
 - Dung (Zoom) Nguyen
 - Advaith Vuppala
 - Seth Darling
+- Ephraim Bennett
 
 # Project 1 Step 4: Data Reader & Starting Initial Model
 
