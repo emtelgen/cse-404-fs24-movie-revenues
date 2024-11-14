@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import joblib  # To save the model
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import GradientBoostingRegressor  # Using GradientBoostingRegressor
+from sklearn.ensemble import GradientBoostingRegressor  
 from sklearn.metrics import mean_absolute_error, r2_score
 from letterbox import Letterboxd
 from revenue import RevenueData
@@ -15,31 +15,25 @@ def process_data_and_train_model(letterboxd, revenue_data):
     merged_data = merged_data.merge(revenue_data_df[['name', 'revenue']], on='name', how='left')
     print('Merged data')
 
-    # Drop rows where revenue is missing
     merged_data = merged_data.dropna(subset=['revenue'])
 
-    # Fill missing values in numeric columns
     merged_data['average_rating'] = merged_data['rating'].fillna(0)
     merged_data['duration'] = merged_data['minute'].fillna(0)
 
-    # Features (X) and target (y)
     X = merged_data.drop(columns=['revenue'])
     y = merged_data['revenue']
 
     print("Columns: ", X.columns)
 
-    # Convert all columns to numeric, filling errors with 0
     X = X.apply(pd.to_numeric, errors='coerce').fillna(0)
 
-    # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Initialize GradientBoostingRegressor with hyperparameters
     model = GradientBoostingRegressor(
-        n_estimators=100,  # Number of boosting stages
-        learning_rate=0.05,  # Step size
-        max_depth=4,  # Maximum depth of the trees
-        subsample=0.8,  # Fraction of samples used for fitting each base learner
+        n_estimators=100,
+        learning_rate=0.05, 
+        max_depth=4,
+        subsample=0.8, 
         random_state=42
     )
 
@@ -56,10 +50,8 @@ def process_data_and_train_model(letterboxd, revenue_data):
     print(f'Mean Absolute Error: {mae}')
     print(f'R^2 Score: {r2}')
 
-    # Visualize the model's predictions vs actual values
     plt.figure(figsize=(10, 6))
 
-    # Scatter plot of predicted vs actual values
     plt.scatter(y_test, y_pred, color='blue', alpha=0.6)
     
     # Plotting the ideal 1:1 line
@@ -70,7 +62,6 @@ def process_data_and_train_model(letterboxd, revenue_data):
     plt.ylabel('Predicted Revenue')
     plt.show()
 
-    # Save the trained model using joblib
     joblib.dump(model, 'gradient_boosting_model.pkl')
     print("Model saved to 'gradient_boosting_model.pkl'")
 
