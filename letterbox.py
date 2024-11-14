@@ -27,6 +27,28 @@ class Letterboxd:
 
         print("Letterboxd data loaded successfully.")
 
+    def merge_data(self):
+        """Merges all the datasets into one."""
+        #merged_data = pd.merge(self.movies, self.actors, on='id', how='left')
+        
+        merged_data = pd.merge(self.movies, self.crew, on='id', how='left', suffixes=('', '_crew'))
+        
+        # Merge with languages and add suffix '_languages'
+        merged_data = pd.merge(merged_data, self.languages, on='id', how='left', suffixes=('', '_languages'))
+        
+        # Merge with studios and add suffix '_studios'
+        merged_data = pd.merge(merged_data, self.studios, on='id', how='left', suffixes=('', '_studios'))
+        
+        merged_data = pd.merge(merged_data, self.countries, on='id', how='left')
+        
+        merged_data = pd.merge(merged_data, self.genres, on='id', how='left')
+        
+        #merged_data = pd.merge(merged_data, self.themes, on='id', how='left')
+        
+        #merged_data = pd.merge(merged_data, self.releases, on='id', how='left')
+        
+        return merged_data
+
     def export_movie_titles(self, filename):
         """Exports movie titles to a CSV file."""
         if self.movies is not None:
