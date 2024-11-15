@@ -45,4 +45,4 @@ A decision Tree was used to predict the movie revenue. This was done using sci-k
 
 
 ### Gradient Boosting Model (model1.png)
-Another model chosen to use was the Gradient Boosting Model. This model was tried and hyperparemeters chosen to reduce the Mean Absolute Error and increase the R^2 value, to around 2 million for the mean absolute error, and an R^2 value of .83. The hyperparemeters were adjusted based on what worked best with the data set, and as the model1.png shows, the line closely follows the values of the movie revenues. Most of the variance was captured by this model as well.
+Another model chosen to use was the Gradient Boosting Model. This model was tried and hyperparemeters chosen to reduce the Mean Absolute Error and increase the R^2 value, to 28166880 for the mean absolute error, and an R^2 value of .83. The hyperparemeters were adjusted based on what worked best with the data set, and as the model1.png shows, the line closely follows the values of the movie revenues. Most of the variance was captured by this model as well.
