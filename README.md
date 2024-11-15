@@ -42,3 +42,7 @@
 # Project Step 5
 ## Decision Tree
 A decision Tree was used to predict the movie revenue. This was done using sci-kit learn's class for the model. There is performance data for both the training set and the testing set. For the training set, the Mean Absolute Error was 2,146,931.4910654337 and the R^2 was 0.9716725076412114. This indicates our model fits the data very well, and is only off by a few million which is small relative to the expected values. For the testing set it was was slightly less accurate but still sufficient. Mean Absolute Error was 2270267.3394089667 and R^2 was 0.9692087802075433 which is only marginally less accurate. Nearly all variance is captured by this decision tree.
+
+
+### Gradient Boosting Model (model1.png)
+Another model chosen to use was the Gradient Boosting Model. This model was tried and hyperparemeters chosen to reduce the Mean Absolute Error and increase the R^2 value, to around 2 million for the mean absolute error, and an R^2 value of .83. The hyperparemeters were adjusted based on what worked best with the data set, and as the model1.png shows, the line closely follows the values of the movie revenues. Most of the variance was captured by this model as well.
