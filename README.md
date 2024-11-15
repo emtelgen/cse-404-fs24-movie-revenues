@@ -39,3 +39,6 @@
 4. Send a report summary about the model's performance on train and test datasets (it is fine that it is very low at this stage).
 5. Push your code to your repository on GitHub, and post a link to it here in response to this assignment.
 > Please make sure to give us access to your code using our GitHub ids (Kordjamshidi,Sanya1001,afsharim).
+# Project Step 5
+## Decision Tree
+A decision Tree was used to predict the movie revenue. This was done using sci-kit learn's class for the model. There is performance data for both the training set and the testing set. For the training set, the Mean Absolute Error was 2,146,931.4910654337 and the R^2 was 0.9716725076412114. This indicates our model fits the data very well, and is only off by a few million which is small relative to the expected values. For the testing set it was was slightly less accurate but still sufficient. Mean Absolute Error was 2270267.3394089667 and R^2 was 0.9692087802075433 which is only marginally less accurate. Nearly all variance is captured by this decision tree.
