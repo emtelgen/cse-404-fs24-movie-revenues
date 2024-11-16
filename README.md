@@ -56,3 +56,5 @@ We chose to use a Stochastic Gradient Descent model to see how it would compare 
 
 ### K Nearest Neighbor KNN model
 This model 
+
+### LightGBM model

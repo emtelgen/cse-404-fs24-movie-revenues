@@ -1,15 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import joblib  
-from sklearn.model_selection import train_test_split 
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
 from letterbox import Letterboxd
 from revenue import RevenueData
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.pipeline import make_pipeline
+import lightgbm as lgb
 from sklearn.preprocessing import StandardScaler
 
-def process_data_and_train_model(letterboxd, revenue_data):
+def process_data_and_train_model_lightgbm(letterboxd, revenue_data):
     print('Merging data')
     merged_data = letterboxd.merge_data() 
     print(merged_data.columns)
@@ -31,9 +30,7 @@ def process_data_and_train_model(letterboxd, revenue_data):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    model = make_pipeline(StandardScaler(),
-                    KNeighborsRegressor(n_neighbors=5))  
-
+    model = lgb.LGBMRegressor(num_leaves=31, max_depth=-1, learning_rate=0.05, n_estimators=100)
     model.fit(X_train, y_train)
 
     y_pred = model.predict(X_test)
@@ -47,7 +44,7 @@ def process_data_and_train_model(letterboxd, revenue_data):
     plt.figure(figsize=(10, 6))
 
     plt.scatter(y_test, y_pred, color='blue', alpha=0.6)
-    
+
     plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
 
     plt.title('Model Prediction vs Actual Revenue')
@@ -55,8 +52,8 @@ def process_data_and_train_model(letterboxd, revenue_data):
     plt.ylabel('Predicted Revenue')
     plt.show()
 
-    joblib.dump(model, 'knn_model.pkl')
-    print("Model saved to knn_model.pkl")
+    joblib.dump(model, 'lightgbm_model.pkl')
+    print("Model saved to lightgbm_model.pkl")
 
 if __name__ == "__main__":
     base_path = "data"
@@ -67,4 +64,4 @@ if __name__ == "__main__":
     letterboxd.load_data()
     revenue_data.load_top_movies_data()
 
-    process_data_and_train_model(letterboxd, revenue_data)
+    process_data_and_train_model_lightgbm(letterboxd, revenue_data)
