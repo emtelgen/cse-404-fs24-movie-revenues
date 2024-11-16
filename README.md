@@ -54,5 +54,5 @@ The Random Forest Regressor model from sklearn was used on training and testing 
 ### SGD Model
 We chose to use a Stochastic Gradient Descent model to see how it would compare to original linear regression model. This model did not perform well with a Mean Absolute Error of 65580930.60790263 and a R^2 of 0.054907837369382095. Capturing some varience but not much.
 
-### Logistic Regression Model
-This model is used to classify movies based on whether their revenue was above or below the median. After splitting the data into training and testing sets, the model is trained using the training data and evaluated on the test set. A balanced precision and recall scores for are shown for both categories, while the confusion matrix revealed that the model had some difficulty distinguishing between the classes but was generally balanced in its predictions. While the Logistic Regression model provided a solid baseline for predicting movie revenue categories, its performance was lower than more complex models like the Decision Tree or Random Forest
+### K Nearest Neighbor KNN model
+This model 
