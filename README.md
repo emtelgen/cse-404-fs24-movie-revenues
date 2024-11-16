@@ -50,11 +50,8 @@ Another model chosen to use was the Gradient Boosting Model. This model was trie
 ### Random Forest Regressor Model 
 The Random Forest Regressor model from sklearn was used on training and testing datasets. The model produced an R^2 value of 0.9326532462988735 and had Mean Absolute Error of 12012789.964526067. The model does a relatively good job of predicting the box office revenue. The hyperparameters were adjusted to reduce the variance and to control the tree's growth. For the testing data set, the model had a Mean Absolute Error of 14236243.853435155 and R^2 of 0.912465378346. The graph illustrates how the accurate the evaluation of the model is with the predicted revenue vs the actual revenue along with high evaluation metrics.
 
-
 ### SGD Model
 We chose to use a Stochastic Gradient Descent model to see how it would compare to original linear regression model. This model did not perform well with a Mean Absolute Error of 65580930.60790263 and a R^2 of 0.054907837369382095. Capturing some varience but not much.
 
-### K Nearest Neighbor KNN model
-This model 
-
 ### LightGBM model
+The results from the LightGBM model shows that the model generally underestimates the revenue. There are some outliers such as the actual revenue of 8 that is far from the predicted revenue. The LightGBM model seems to be better at getting the general trend in the data. Though, compared to the Random Forest model here many of the points lie exactly on the line of prediction, the accuracy of LightGBM may not be as good.
