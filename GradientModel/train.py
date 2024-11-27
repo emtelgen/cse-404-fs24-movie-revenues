@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import joblib  # To save the model
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor  
-from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.metrics import mean_absolute_error, r2_score, mean_squared_error
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import sys
@@ -19,7 +19,7 @@ def merge_data(letterboxd, revenue_data):
     """
     print('Merging data...')
     #merged_data = letterboxd.merge_data()
-    merged_data = pd.read_csv("letterboxdata.csv", nrows=600000)  # Assuming `merge_data` is a method from Letterboxd
+    merged_data = pd.read_csv("letterboxdata.csv", nrows=1000000)  # Assuming `merge_data` is a method from Letterboxd
     print(merged_data.columns)
     
     # Renaming revenue data for proper merging
@@ -57,13 +57,19 @@ def merge_data(letterboxd, revenue_data):
 
 from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import train_test_split, learning_curve
+from sklearn.metrics import mean_absolute_error
+from sklearn.ensemble import GradientBoostingRegressor
+import numpy as np
+import matplotlib.pyplot as plt
+import joblib
 
 def train_and_evaluate_model(merged_data):
     """
     Trains a GradientBoostingRegressor model on the merged data.
     Evaluates the model performance and displays the results.
     """
-    # Features (X) and target variable (y)
     X = merged_data.drop(columns=['revenue', 'description'])  # Drop unnecessary columns
     y = merged_data['revenue']
 
@@ -75,55 +81,77 @@ def train_and_evaluate_model(merged_data):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Define the parameter grid for RandomizedSearchCV
-    param_dist = {
-        'n_estimators': np.arange(50, 200, 10),    # Number of trees in the forest
-        'learning_rate': [0.001, 0.01, 0.05, 0.1, 0.2],  # Learning rate
-        'max_depth': np.arange(3, 15, 1),  # Maximum depth of each tree
-        'subsample': [0.6, 0.7, 0.8, 0.9, 1.0],  # Fraction of samples used for training each tree
-        'min_samples_split': np.arange(2, 10, 1),  # Minimum number of samples required to split an internal node
-        'min_samples_leaf': np.arange(1, 10, 1)  # Minimum number of samples required at each leaf node
+    # Best hyperparameters found from previous RandomizedSearchCV
+    best_params = {
+        'subsample': 0.8,
+        'n_estimators': 180,
+        'min_samples_split': 5,
+        'min_samples_leaf': 5,
+        'max_depth': 5,
+        'learning_rate': 0.1
     }
 
-    # Initialize the model
-    model = GradientBoostingRegressor(random_state=42)
+    # Initialize the model with the best hyperparameters
+    model = GradientBoostingRegressor(
+        subsample=best_params['subsample'],
+        n_estimators=best_params['n_estimators'],
+        min_samples_split=best_params['min_samples_split'],
+        min_samples_leaf=best_params['min_samples_leaf'],
+        max_depth=best_params['max_depth'],
+        learning_rate=best_params['learning_rate'],
+        random_state=42
+    )
 
-    # Perform RandomizedSearchCV with 5-fold cross-validation
-    randomized_search = RandomizedSearchCV(model, param_dist, n_iter=100, cv=5, random_state=42, n_jobs=-1)
+    # Use learning_curve to get training and testing scores for different sizes of training data
+    train_sizes, train_scores, test_scores = learning_curve(
+        model, X_train, y_train, cv=5, scoring='r2', n_jobs=-1, train_sizes=np.linspace(0.1, 1.0, 10)
+    )
 
-    # Fit the RandomizedSearchCV model
-    randomized_search.fit(X_train, y_train)
+    # Calculate mean and standard deviation of the training and testing scores
+    train_mean = np.mean(train_scores, axis=1)
+    test_mean = np.mean(test_scores, axis=1)
+    train_std = np.std(train_scores, axis=1)
+    test_std = np.std(test_scores, axis=1)
 
-    # Get the best model from the randomized search
-    best_model = randomized_search.best_estimator_
-
-    print(f"Best hyperparameters: {randomized_search.best_params_}")
-
-    # Make predictions using the best model
-    y_pred = best_model.predict(X_test)
-
-    # Evaluate the model's performance
-    mae = mean_absolute_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-
-    print(f'Mean Absolute Error: {mae}')
-    print(f'R^2 Score: {r2}')
-
-    # Plotting predictions vs actual revenue
+    # Plotting the learning curve
     plt.figure(figsize=(10, 6))
-    plt.scatter(y_test, y_pred, color='blue', alpha=0.6)
-    
-    # Plotting the ideal 1:1 line
-    plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+    plt.plot(train_sizes, train_mean, label='Training score', color='blue', marker='o')
+    plt.plot(train_sizes, test_mean, label='Cross-validation score', color='green', marker='o')
 
-    plt.title('Model Prediction vs Actual Revenue')
-    plt.xlabel('Actual Revenue')
-    plt.ylabel('Predicted Revenue')
+    plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.2, color='blue')
+    plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, alpha=0.2, color='green')
+
+    plt.title('Learning Curve (Training vs. Cross-validation)')
+    plt.xlabel('Training Size')
+    plt.ylabel('R² Score')
+    plt.legend(loc='best')
+    plt.grid(True)
     plt.show()
 
-    # Save the best model from the randomized search
-    joblib.dump(best_model, 'gradient_boosting_model_best.pkl')
+    # Train the model on the full training set
+    model.fit(X_train, y_train)
+
+    # Make predictions on the training and test sets
+    train_pred = model.predict(X_train)
+    test_pred = model.predict(X_test)
+
+    # Calculate Mean Absolute Error (MAE) and Mean Squared Error (MSE)
+    train_mae = mean_absolute_error(y_train, train_pred)
+    test_mae = mean_absolute_error(y_test, test_pred)
+
+    train_mse = mean_squared_error(y_train, train_pred)
+    test_mse = mean_squared_error(y_test, test_pred)
+
+    # Print MAE and MSE for both training and test sets
+    print(f"Training MAE: {train_mae}")
+    print(f"Test MAE: {test_mae}")
+    print(f"Training MSE: {train_mse}")
+    print(f"Test MSE: {test_mse}")
+
+    # Save the best model
+    joblib.dump(model, 'gradient_boosting_model_best.pkl')
     print("Best model saved to 'gradient_boosting_model_best.pkl'")
+
 
 def main():
     """
