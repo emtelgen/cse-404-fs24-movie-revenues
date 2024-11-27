@@ -29,9 +29,22 @@ class Letterboxd:
 
     def merge_data(self):
         """Merges all the datasets into one."""
-        #merged_data = pd.merge(self.movies, self.actors, on='id', how='left')
-        
-        merged_data = pd.merge(self.movies, self.crew, on='id', how='left', suffixes=('', '_crew'))
+        top_actors = pd.read_csv(f"{self.base_path}/top100.csv")['Name'].tolist()
+
+        # Assuming `self.actors` contains the columns: ['movie_id', 'actor_name']
+        # Group actors by movie_id and aggregate them into a list of actor names
+        actors_grouped = self.actors.groupby('id')['name'].apply(list).reset_index()
+
+        # Function to count how many actors in the movie are in the top100 list
+        def count_top_actors(movie_actors):
+            return sum(1 for actor in movie_actors if actor in top_actors)
+
+        # Apply the function to count top actors for each movie
+        actors_grouped['top_actors_count'] = actors_grouped['name'].apply(count_top_actors)
+
+        # Now merge this back into the main movie data
+        merged_data = pd.merge(self.movies, actors_grouped[['id', 'top_actors_count']], on='id', how='left')
+        merged_data = pd.merge(merged_data, self.crew, on='id', how='left', suffixes=('', '_crew'))
         
         # Merge with languages and add suffix '_languages'
         merged_data = pd.merge(merged_data, self.languages, on='id', how='left', suffixes=('', '_languages'))
@@ -46,7 +59,7 @@ class Letterboxd:
         #merged_data = pd.merge(merged_data, self.themes, on='id', how='left')
         
         #merged_data = pd.merge(merged_data, self.releases, on='id', how='left')
-        
+        merged_data.to_csv('letterboxdata.csv', index=False)
         return merged_data
 
     def export_movie_titles(self, filename):
