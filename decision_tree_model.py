@@ -29,23 +29,27 @@ def process_data_and_train_model(letterboxd, revenue_data):
     print("Columns: ", X.columns)
 
     X = X.apply(pd.to_numeric, errors='coerce').fillna(0)
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
     model = DecisionTreeClassifier()
+    maes = []
+    r2s = []
+    splits = [.9, .8, .7, .6, .5, .4, .3, .2]
+    for split in (splits):
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=split, random_state=42)
 
-    # Train the model
-    model.fit(X_train, y_train)
+        #model = DecisionTreeClassifier()
 
-    # Predictions
-    y_pred = model.predict(X_test)
+        # Train the model
+        model.fit(X_train, y_train)
 
-    # Evaluate the model
-    mae = mean_absolute_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+        # Predictions
+        y_pred = model.predict(X_test)
 
-    print(f'Mean Absolute Error: {mae}')
-    print(f'R^2 Score: {r2}')
+        # Evaluate the model
+        maes.append(mean_absolute_error(y_test, y_pred))
+        r2s.append(r2_score(y_test, y_pred))
+
+    print(f'Mean Absolute Error: {maes[-1]}')
+    print(f'R^2 Score: {r2s[-1]}')
 
     plt.figure(figsize=(10, 6))
 
@@ -58,6 +62,27 @@ def process_data_and_train_model(letterboxd, revenue_data):
     plt.xlabel('Actual Revenue')
     plt.ylabel('Predicted Revenue')
     plt.show()
+    plt.savefig("decision_tree_predictions")
+
+    # MAE by training size
+    plt.figure(figsize=(10, 6))
+    plt.scatter(splits, maes, color="blue", alpha=-0.6)
+    
+    plt.title('MAE over training size')
+    plt.xlabel('Split of test data')
+    plt.ylabel('MAE')
+    plt.show()
+    plt.savefig("decision_tree_mae")
+
+    # R2 by training size
+    plt.figure(figsize=(10, 6))
+    plt.scatter(splits, r2s, color="blue", alpha=-0.6)
+    
+    plt.title('R2 over training size')
+    plt.xlabel('Split of test data')
+    plt.ylabel('R2')
+    plt.show()
+    plt.savefig("decision_tree_r2")
 
     #joblib.dump(model, 'gradient_boosting_model.pkl')
     #print("Model saved to 'gradient_boosting_model.pkl'")
